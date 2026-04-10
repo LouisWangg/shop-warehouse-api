@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 
-import java.math.BigDecimal;
-
 @Entity
 @Table(name = "products")
 @Data

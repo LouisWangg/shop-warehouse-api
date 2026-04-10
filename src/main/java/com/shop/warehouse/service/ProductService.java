@@ -52,7 +52,6 @@ public class ProductService {
         return productRepository.findById(id).map(product -> {
             product.setName(productDetails.getName());
             product.setDescription(productDetails.getDescription());
-            product.setCode(productDetails.getCode());
             return productRepository.save(product);
         }).orElseThrow(() -> new RuntimeException("Product not found with id " + id));
     }

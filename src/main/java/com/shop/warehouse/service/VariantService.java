@@ -48,8 +48,8 @@ public class VariantService {
                     if (num > maxNumber) {
                         maxNumber = num;
                     }
-                } catch (Exception e) {
-                    // Ignore non-standard formats
+                } catch (NumberFormatException e) {
+                    // Ignore invalid formats
                 }
             }
             variant.setSku(prefix + String.format("%06d", maxNumber + 1));
@@ -62,8 +62,8 @@ public class VariantService {
         return variantRepository.findById(id).map(variant -> {
             variant.setName(variantDetails.getName());
             variant.setPrice(variantDetails.getPrice());
-            variant.setSku(variantDetails.getSku());
-            variant.setQuantity(variantDetails.getQuantity());
+            // SKU intentionally excluded to prevent overwriting auto-generated values
+            variant.setAttributes(variantDetails.getAttributes());
             return variantRepository.save(variant);
         }).orElseThrow(() -> new RuntimeException("Variant not found with id " + id));
     }
