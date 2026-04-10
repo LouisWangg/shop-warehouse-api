@@ -23,6 +23,6 @@ public class Product {
 
     private String description;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String code;
 }

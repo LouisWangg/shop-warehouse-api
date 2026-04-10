@@ -35,6 +35,26 @@ public class VariantService {
         Product product = productRepository.findById(productId)
             .orElseThrow(() -> new RuntimeException("Product not found with id " + productId));
         variant.setProduct(product);
+        
+        // Auto-generate SKU from Product code with 6-digit sequence (e.g., "CT-000001")
+        if (variant.getSku() == null || variant.getSku().isEmpty()) {
+            String prefix = product.getCode() + "-";
+            List<Variant> existingVariants = variantRepository.findBySkuStartingWith(prefix);
+            int maxNumber = 0;
+            for (Variant existing : existingVariants) {
+                try {
+                    String numberPart = existing.getSku().substring(prefix.length());
+                    int num = Integer.parseInt(numberPart);
+                    if (num > maxNumber) {
+                        maxNumber = num;
+                    }
+                } catch (Exception e) {
+                    // Ignore non-standard formats
+                }
+            }
+            variant.setSku(prefix + String.format("%06d", maxNumber + 1));
+        }
+
         return variantRepository.save(variant);
     }
 

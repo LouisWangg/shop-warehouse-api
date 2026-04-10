@@ -23,7 +23,29 @@ public class ProductService {
     }
 
     public Product createProduct(Product product) {
+        product.setCode(generateProductCode(product.getName()));
         return productRepository.save(product);
+    }
+
+    private String generateProductCode(String productName) {
+        if (productName == null) productName = "";
+        
+        String cleansedName = productName.replaceAll("[^A-Za-z ]", "");
+        String[] words = cleansedName.split(" ");
+        StringBuilder prefixBuilder = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                prefixBuilder.append(word.charAt(0));
+            }
+        }
+
+        String prefix = prefixBuilder.toString().toUpperCase();
+        if (prefix.isEmpty()) {
+            prefix = "PRD"; 
+        }
+
+        return prefix;
     }
 
     public Product updateProduct(Long id, Product productDetails) {

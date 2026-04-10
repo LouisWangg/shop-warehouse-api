@@ -9,36 +9,38 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.math.BigDecimal;
+import java.util.Map;
+
+import com.shop.warehouse.service.ProductService;
 
 @Configuration
 public class SampleDataInitializer {
 
     @Bean
-    public CommandLineRunner initData(ProductRepository productRepository, VariantRepository variantRepository) {
+    public CommandLineRunner initData(ProductRepository productRepository, VariantRepository variantRepository, ProductService productService) {
         return args -> {
             if (productRepository.count() == 0) {
                 // Create sample product
                 Product shirt = new Product();
                 shirt.setName("Classic T-Shirt");
                 shirt.setDescription("100% cotton base t-shirt");
-                shirt.setCode("TSH-001");
-                productRepository.save(shirt);
+                Product savedShirt = productService.createProduct(shirt);
 
                 // Create sample variants
                 Variant redMedium = new Variant();
-                redMedium.setProduct(shirt);
+                redMedium.setProduct(savedShirt);
                 redMedium.setName("Red - Medium");
-                redMedium.setSku("TSH-001-R-M");
-                redMedium.setPrice(new BigDecimal("19.99"));
+                redMedium.setPrice(new BigDecimal("199000"));
                 redMedium.setQuantity(50);
+                redMedium.setAttributes(Map.of("color", "Red", "size", "M"));
                 variantRepository.save(redMedium);
 
                 Variant blueLarge = new Variant();
-                blueLarge.setProduct(shirt);
+                blueLarge.setProduct(savedShirt);
                 blueLarge.setName("Blue - Large");
-                blueLarge.setSku("TSH-001-B-L");
-                blueLarge.setPrice(new BigDecimal("21.99"));
+                blueLarge.setPrice(new BigDecimal("219000"));
                 blueLarge.setQuantity(30);
+                blueLarge.setAttributes(Map.of("color", "Blue", "size", "L"));
                 variantRepository.save(blueLarge);
                 
                 System.out.println("Sample database data successfully initialized!");

@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Map;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "variants")
@@ -33,5 +36,9 @@ public class Variant {
 
     @Column(nullable = false)
     private Integer quantity;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> attributes;
 
 }

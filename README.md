@@ -57,7 +57,7 @@ curl -X GET http://localhost:8080/api/products
 ```bash
 curl -X POST http://localhost:8080/api/variants/product/1 \
      -H "Content-Type: application/json" \
-     -d '{"name":"Red - Medium","sku":"TSH-001-R-M","price":19.99,"quantity":50}'
+     -d '{"name":"Red - Medium","sku":"TSH-001-R-M","price":199000,"quantity":50}'
 ```
 
 **Record a Sale / Reduce Stock:**
