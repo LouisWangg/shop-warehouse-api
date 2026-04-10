@@ -12,12 +12,13 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import com.shop.warehouse.service.ProductService;
+import com.shop.warehouse.service.VariantService;
 
 @Configuration
 public class SampleDataInitializer {
 
     @Bean
-    public CommandLineRunner initData(ProductRepository productRepository, VariantRepository variantRepository, ProductService productService) {
+    public CommandLineRunner initData(ProductRepository productRepository, VariantRepository variantRepository, ProductService productService, VariantService variantService) {
         return args -> {
             if (productRepository.count() == 0) {
                 // Create sample product
@@ -33,7 +34,7 @@ public class SampleDataInitializer {
                 redMedium.setPrice(new BigDecimal("199000"));
                 redMedium.setQuantity(50);
                 redMedium.setAttributes(Map.of("color", "Red", "size", "M"));
-                variantRepository.save(redMedium);
+                variantService.createVariant(savedShirt.getId(), redMedium);
 
                 Variant blueLarge = new Variant();
                 blueLarge.setProduct(savedShirt);
@@ -41,7 +42,7 @@ public class SampleDataInitializer {
                 blueLarge.setPrice(new BigDecimal("219000"));
                 blueLarge.setQuantity(30);
                 blueLarge.setAttributes(Map.of("color", "Blue", "size", "L"));
-                variantRepository.save(blueLarge);
+                variantService.createVariant(savedShirt.getId(), blueLarge);
                 
                 System.out.println("Sample database data successfully initialized!");
             }

@@ -1,0 +1,11 @@
+com\shop\warehouse\controller\ProductController.class
+com\shop\warehouse\controller\VariantController.class
+com\shop\warehouse\repository\ProductRepository.class
+com\shop\warehouse\config\SampleDataInitializer.class
+com\shop\warehouse\exception\GlobalExceptionHandler.class
+com\shop\warehouse\repository\VariantRepository.class
+com\shop\warehouse\service\ProductService.class
+com\shop\warehouse\model\Product.class
+com\shop\warehouse\model\Variant.class
+com\shop\warehouse\service\VariantService.class
+com\shop\warehouse\WarehouseApplication.class

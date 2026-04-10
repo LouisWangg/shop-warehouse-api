@@ -1,0 +1,11 @@
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\service\ProductService.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\service\VariantService.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\WarehouseApplication.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\exception\GlobalExceptionHandler.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\model\Product.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\model\Variant.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\repository\ProductRepository.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\config\SampleDataInitializer.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\controller\ProductController.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\controller\VariantController.java
+D:\shop-warehouse-api\src\main\java\com\shop\warehouse\repository\VariantRepository.java

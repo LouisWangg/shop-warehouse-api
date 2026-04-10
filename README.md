@@ -33,7 +33,7 @@ CREATE DATABASE warehouse;
 ### Running Locally
 Execute the following command in the root project directory:
 ```bash
-mvn spring-boot:run
+./mvnw spring-boot:run
 ```
 
 The server will initialize on `http://localhost:8080`.
