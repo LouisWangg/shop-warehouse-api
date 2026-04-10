@@ -35,13 +35,11 @@ public class VariantController {
 
     @PostMapping("/product/{productId}")
     public ResponseEntity<Variant> createVariant(@PathVariable Long productId, @Valid @RequestBody Variant variant) {
-        // GlobalExceptionHandler traps any errors natively here
         return ResponseEntity.ok(variantService.createVariant(productId, variant));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Variant> updateVariant(@PathVariable Long id, @Valid @RequestBody Variant variant) {
-        // GlobalExceptionHandler traps any errors natively here
         return ResponseEntity.ok(variantService.updateVariant(id, variant));
     }
 
@@ -53,7 +51,6 @@ public class VariantController {
 
     @PatchMapping("/{id}/stock")
     public ResponseEntity<Variant> updateStock(@PathVariable Long id, @RequestParam Integer quantityChange) {
-        // GlobalExceptionHandler captures the Insufficient Stock generic exception beautifully here!
         return ResponseEntity.ok(variantService.updateStock(id, quantityChange));
     }
 }

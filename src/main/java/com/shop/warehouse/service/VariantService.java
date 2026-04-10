@@ -36,7 +36,7 @@ public class VariantService {
             .orElseThrow(() -> new RuntimeException("Product not found with id " + productId));
         variant.setProduct(product);
         
-        // Auto-generate SKU from Product code with 6-digit sequence (e.g., "CT-000001")
+        // Auto-generate SKU from Product code
         if (variant.getSku() == null || variant.getSku().isEmpty()) {
             String prefix = product.getCode() + "-";
             List<Variant> existingVariants = variantRepository.findBySkuStartingWith(prefix);
@@ -62,7 +62,6 @@ public class VariantService {
         return variantRepository.findById(id).map(variant -> {
             variant.setName(variantDetails.getName());
             variant.setPrice(variantDetails.getPrice());
-            // SKU intentionally excluded to prevent overwriting auto-generated values
             variant.setAttributes(variantDetails.getAttributes());
             return variantRepository.save(variant);
         }).orElseThrow(() -> new RuntimeException("Variant not found with id " + id));

@@ -25,4 +25,5 @@ public class Product {
 
     @Column(nullable = false, unique = true)
     private String code;
+    
 }

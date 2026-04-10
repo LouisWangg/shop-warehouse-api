@@ -1,16 +1,20 @@
 # Shop Warehouse Management API
 
-A RESTful API built with Spring Boot 3.x and Java 17 for managing warehouse inventory, products, and their variants.
+A RESTful API built with Java 17 and Spring Boot 3.x for managing warehouse inventory, products, and variants.
 
 ## Design Decisions
-- **Separation of Concerns:** The system separates `Product` (the base item) and `Variant` (specific colors, sizes). This allows tracking granular stock levels and differing prices per variant.
+- **Separation of Concerns:** The system strictly separates generic `Product` catalogs from specific `Variant` items (e.g. sizes and colors). This allows tracking granular stock levels and prices per variant.
 - **Relational Integrity:** Implemented a unidirectional Many-to-One relationship from `Variant` to `Product`.
-- **Validation:** Business logic in `VariantService` prevents reducing stock below 0, ensuring we never sell out-of-stock items.
-- **Database:** PostgreSQL was selected for robust, relational data persistence.
+- **JSONB Attributes Mapping:** To ensure the Variant attributes are completely flexible for future expansion (e.g., adding materials, weight), I utilized Hibernate 6's `@JdbcTypeCode(SqlTypes.JSON)` to map a standard Java `Map` directly to a PostgreSQL `jsonb` column.
+- **Automated Identifiers:** 
+  - Product Codes are strictly auto-generated uppercase substring sequences extracted from the product name (e.g., "Classic T-Shirt" -> "CT").
+  - Variant SKUs are uniquely assigned using a 6-digit zero-padded sequence joined to the Product Code (e.g., "CT-000001").
+- **Robust Exception Handling:** Integrated spring-boot-starter-validation to proactively reject bad data and built an `@RestControllerAdvice` Global Exception Handler to format errors cleanly.
 
-## Assumptions Made
-- A "sell" operation is analogous to reducing the stock of a specific variant. This is handled via the `PATCH /api/variants/{id}/stock` endpoint with a negative quantity change.
-- A Product does not have a price or stock on its own; it serves as a catalog grouping for Variants.
+## Any Assumptions Made
+- A "sell" operation is analogous to reducing the stock of a specific variant. This is handled via the `PATCH /api/variants/{id}/stock` endpoint with a negative quantity change parameter.
+- A Product does not logically possess a price or stock on its own; it serves strictly as a high-level catalog grouping for its Variants.
+- Initial PostgreSQL setup defaults to `postgres` / `postgres`.
 
 ## How to Run the Application
 
@@ -21,7 +25,7 @@ A RESTful API built with Spring Boot 3.x and Java 17 for managing warehouse inve
 
 ### Configuration
 By default, the application connects to a PostgreSQL database named `warehouse` with username `postgres` and password `postgres`.
-Make sure you create the empty database in your PostgreSQL instance:
+Before booting the application, ensure the database exists:
 ```sql
 CREATE DATABASE warehouse;
 ```
@@ -32,8 +36,8 @@ Execute the following command in the root project directory:
 mvn spring-boot:run
 ```
 
-The server will start on `http://localhost:8080`.
-*(Note: Sample data is automatically injected into the database on the first run).*
+The server will initialize on `http://localhost:8080`.
+*(Note: A `SampleDataInitializer` automatically injects dummy Products and Variants formatted with JSON attributes into the database on the first run).*
 
 ## API Endpoint Examples
 
@@ -43,7 +47,7 @@ The server will start on `http://localhost:8080`.
 ```bash
 curl -X POST http://localhost:8080/api/products \
      -H "Content-Type: application/json" \
-     -d '{"name":"Classic T-Shirt","description":"100% cotton","code":"TSH-001"}'
+     -d '{"name":"Classic T-Shirt","description":"100% cotton"}'
 ```
 
 **Get All Products:**
@@ -53,18 +57,55 @@ curl -X GET http://localhost:8080/api/products
 
 ### 2. Variants
 
-**Add a Variant (e.g. Red, Size M):**
+**Add a Variant:**
 ```bash
 curl -X POST http://localhost:8080/api/variants/product/1 \
      -H "Content-Type: application/json" \
-     -d '{"name":"Red - Medium","sku":"TSH-001-R-M","price":199000,"quantity":50}'
+     -d '{"name":"Red - Medium", "price":199000, "quantity":50, "attributes": {"color": "Red", "size": "M"}}'
+```
+
+**Get All Variants (JSON Example Output):**
+```bash
+curl -X GET http://localhost:8080/api/variants
+```
+*Output:*
+```json
+[
+  {
+    "id": 1,
+    "product": {
+      "id": 1,
+      "name": "Classic T-Shirt",
+      "description": "100% cotton base t-shirt",
+      "code": "CT"
+    },
+    "name": "Red - Medium",
+    "sku": "CT-000001",
+    "price": 199000,
+    "quantity": 50,
+    "attributes": {
+      "size": "M",
+      "color": "Red"
+    }
+  }
+]
 ```
 
 **Record a Sale / Reduce Stock:**
-*If a customer buys 2 items, we reduce the inventory by 2.*
+*If a customer buys 2 items, we dynamically query the endpoint with -2:*
 ```bash
 curl -X PATCH "http://localhost:8080/api/variants/1/stock?quantityChange=-2"
 ```
 
-**Prevent Over-selling:**
-*If you try to reduce stock by 100 but only 48 remain, the API will reject the request with a `400 Bad Request` and "Insufficient stock" message.*
+**Validation Failures:**
+*If you submit an empty product name (`""`), the API cleanly rejects it:*
+```json
+{
+  "timestamp": "2026-04-10T15:30:22.0000",
+  "status": 400,
+  "error": "Validation Failed",
+  "details": {
+    "name": "Product name is mandatory"
+  }
+}
+```
