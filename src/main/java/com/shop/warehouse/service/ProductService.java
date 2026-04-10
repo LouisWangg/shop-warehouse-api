@@ -27,6 +27,18 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public Product updateProduct(Long id, Product productDetails) {
+        return productRepository.findById(id).map(product -> {
+            product.setName(productDetails.getName());
+            product.setDescription(productDetails.getDescription());
+            return productRepository.save(product);
+        }).orElseThrow(() -> new RuntimeException("Product not found with id " + id));
+    }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+
     private String generateProductCode(String productName) {
         if (productName == null) productName = "";
         
@@ -46,17 +58,5 @@ public class ProductService {
         }
 
         return prefix;
-    }
-
-    public Product updateProduct(Long id, Product productDetails) {
-        return productRepository.findById(id).map(product -> {
-            product.setName(productDetails.getName());
-            product.setDescription(productDetails.getDescription());
-            return productRepository.save(product);
-        }).orElseThrow(() -> new RuntimeException("Product not found with id " + id));
-    }
-
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
     }
 }

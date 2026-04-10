@@ -35,7 +35,6 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable Long id, @Valid @RequestBody Product product) {
-        // We no longer need a manual try/catch since GlobalExceptionHandler traps it perfectly!
         return ResponseEntity.ok(productService.updateProduct(id, product));
     }
 

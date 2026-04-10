@@ -5,7 +5,7 @@ A RESTful API built with Java 17 and Spring Boot 3.x for managing warehouse inve
 ## Design Decisions
 - **Separation of Concerns:** The system strictly separates generic `Product` catalogs from specific `Variant` items (e.g. sizes and colors). This allows tracking granular stock levels and prices per variant.
 - **Relational Integrity:** Implemented a unidirectional Many-to-One relationship from `Variant` to `Product`.
-- **JSONB Attributes Mapping:** To ensure the Variant attributes are completely flexible for future expansion (e.g., adding materials, weight), I utilized Hibernate 6's `@JdbcTypeCode(SqlTypes.JSON)` to map a standard Java `Map` directly to a PostgreSQL `jsonb` column.
+- **JSONB Attributes Mapping:** To ensure the Variant attributes are completely flexible for future expansion (e.g., adding materials, weight).
 - **Automated Identifiers:** 
   - Product Codes are strictly auto-generated uppercase substring sequences extracted from the product name (e.g., "Classic T-Shirt" -> "CT").
   - Variant SKUs are uniquely assigned using a 6-digit zero-padded sequence joined to the Product Code (e.g., "CT-000001").
