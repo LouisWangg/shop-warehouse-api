@@ -2,6 +2,7 @@ package com.shop.warehouse.controller;
 
 import com.shop.warehouse.model.Variant;
 import com.shop.warehouse.service.VariantService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,22 +34,15 @@ public class VariantController {
     }
 
     @PostMapping("/product/{productId}")
-    public ResponseEntity<?> createVariant(@PathVariable Long productId, @RequestBody Variant variant) {
-        try {
-            return ResponseEntity.ok(variantService.createVariant(productId, variant));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Variant> createVariant(@PathVariable Long productId, @Valid @RequestBody Variant variant) {
+        // GlobalExceptionHandler traps any errors natively here
+        return ResponseEntity.ok(variantService.createVariant(productId, variant));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Variant> updateVariant(@PathVariable Long id, @RequestBody Variant variant) {
-        try {
-            Variant updatedVariant = variantService.updateVariant(id, variant);
-            return ResponseEntity.ok(updatedVariant);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Variant> updateVariant(@PathVariable Long id, @Valid @RequestBody Variant variant) {
+        // GlobalExceptionHandler traps any errors natively here
+        return ResponseEntity.ok(variantService.updateVariant(id, variant));
     }
 
     @DeleteMapping("/{id}")
@@ -58,12 +52,8 @@ public class VariantController {
     }
 
     @PatchMapping("/{id}/stock")
-    public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam Integer quantityChange) {
-        try {
-            Variant updatedVariant = variantService.updateStock(id, quantityChange);
-            return ResponseEntity.ok(updatedVariant);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<Variant> updateStock(@PathVariable Long id, @RequestParam Integer quantityChange) {
+        // GlobalExceptionHandler captures the Insufficient Stock generic exception beautifully here!
+        return ResponseEntity.ok(variantService.updateStock(id, quantityChange));
     }
 }

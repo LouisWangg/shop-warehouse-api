@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
 
 import java.math.BigDecimal;
 
@@ -19,10 +20,11 @@ public class Product {
     private Long id;
 
     @Column(nullable = false)
+    @NotBlank(message = "Product name is mandatory")
     private String name;
 
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String code;
 }
